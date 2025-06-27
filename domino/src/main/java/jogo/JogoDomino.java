@@ -36,15 +36,15 @@ public class JogoDomino {
     private ObjectInputStream servidorEntrada;
     private ObjectOutputStream servidorSaida;
 
-    public JogoDomino() { // Removido throws Exception para tratar a conexão no construtor
+    public JogoDomino() { 
         console = new Scanner(System.in);
         try {
             conectar();
             iniciar();
             jogar();
         } catch (ConnectException e) {
-            System.err.println("Não foi possível conectar ao servidor. Verifique o IP/Porta e se o servidor está online. " + e.getMessage());
-            System.exit(1); // Sai do programa se não conectar
+            System.err.println("Não foi possível conectar ao servidor." + e.getMessage());
+            System.exit(1); 
         } catch (IOException e) {
             System.err.println("Erro de comunicação com o servidor ao iniciar o jogo: " + e.getMessage());
             e.printStackTrace();
@@ -64,7 +64,7 @@ public class JogoDomino {
         }
     }
 
-    private void conectar() throws IOException, ClassNotFoundException { // Lançar exceções para o construtor tratar
+    private void conectar() throws IOException, ClassNotFoundException { 
         try {
             servidorConexao = new Socket(InetAddress.getByName(Config.getIp()), Config.getPorta());
             servidorSaida = new ObjectOutputStream(servidorConexao.getOutputStream());
@@ -100,7 +100,7 @@ public class JogoDomino {
         fim = false;
     }
 
-    private void jogar() { // Tratamento de exceções dentro do loop
+    private void jogar() { 
         try {
             while (!fim) {
                 if (!suaVez) {
@@ -125,32 +125,38 @@ public class JogoDomino {
                                 System.out.println("O outro jogador passou a vez.");
                                 suaVez = true;
                             } else {
-                                // Se comprou e não foi uma passagem, ainda não é a vez do jogador
                                 continue;
                             }
                             break;
                         case "J1":
-                        case "J2": // Recebe jogada do oponente
+                        case "J2":
                             if (infoRecebida[1].equals("passar")) {
                                 System.out.println("O outro jogador (" + infoRecebida[0] + ") passou a vez.");
                             } else {
                                 String[] lados = infoRecebida[1].split("-");
-                                int ladoA = Integer.parseInt(lados[0]);
-                                int ladoB = Integer.parseInt(lados[1]);
-                                mesa.add(new Pedra(ladoA, ladoB));
-                                System.out.println("Jogador " + infoRecebida[0] + " jogou a pedra: [" + ladoA + "|" + ladoB + "]");
+                                if (lados.length == 2) {
+                                    int ladoA = Integer.parseInt(lados[0]);
+                                    int ladoB = Integer.parseInt(lados[1]);
+                                    String ladoMesa = infoRecebida.length > 2 ? infoRecebida[2] : "r";
+
+                                    if (adicionarNaMesa(ladoA, ladoB, ladoMesa)) {
+                                        System.out.println("Jogador " + infoRecebida[0] + " jogou: " + 
+                                                         mesa.get(ladoMesa.equals("l") ? 0 : mesa.size()-1));
+                                    } else {
+                                        System.out.println("Jogada inválida de " + infoRecebida[0] + 
+                                                         ". Pedra [" + ladoA + "|" + ladoB + "] não encaixa.");
+                                    }
+                                }
                             }
-                            suaVez = true; // É a vez do meu jogador
+                            suaVez = true;
                             break;
                         case "ok":
-                            System.out.println(infoRecebida[1]); // Mensagem de sucesso da sua jogada
-                            // SuaVez já foi setada para false após o envio
+                            System.out.println(infoRecebida[1]);
                             break;
                         case "erro":
                             System.out.println("Mensagem do servidor: " + infoRecebida[1]);
-                            // A jogada foi inválida, então a vez ainda é do jogador atual para tentar novamente
-                            suaVez = true; // Permanece na sua vez
-                            continue; // Volta para o início do loop para pedir nova jogada
+                            suaVez = true; 
+                            continue;
                         default:
                             System.out.println("Mensagem desconhecida do servidor: " + mensagemRecebida);
                             break;
@@ -165,13 +171,13 @@ public class JogoDomino {
                     boolean jogadaValidaCliente = false;
 
                     while(!jogadaValidaCliente) {
-                        System.out.print("Deseja jogar ou passar? (jogar/passar): ");
+                        System.out.print("Deseja jogar ou passar? (j/p): ");
                         acao = console.nextLine();
 
-                        if (acao.equalsIgnoreCase("passar")) {
+                        if (acao.equalsIgnoreCase("p")) {
                             servidorSaida.writeObject(jogadorId + ";passar");
-                            jogadaValidaCliente = true; // Será validado pelo servidor, mas localmente enviamos
-                        } else if (acao.equalsIgnoreCase("jogar")) {
+                            jogadaValidaCliente = true; 
+                        } else if (acao.equalsIgnoreCase("j")) {
                             System.out.print("Informe o lado A da pedra: ");
                             int ladoA = console.nextInt();
                             System.out.print("Informe o lado B da pedra: ");
@@ -198,34 +204,39 @@ public class JogoDomino {
                                 
                                 String respostaServidor = (String) servidorEntrada.readObject();
                                 if (respostaServidor.startsWith("ok")) {
-                                    System.out.println("Jogada validada pelo servidor.");
                                     if (pedraParaRemoverLocal != null) {
                                         mao.remove(pedraParaRemoverLocal);
                                     }
+                                    // adiciono a mesa também a minha própria jogada
+                                    adicionarNaMesa(ladoA, ladoB, ladoMesa);
+
                                     jogadaValidaCliente = true;
                                 } else if (respostaServidor.startsWith("erro")) {
                                     System.out.println("Erro na sua jogada: " + respostaServidor.split(";")[1]);
-                                    // Permanece no loop para nova tentativa, sua vez continua
+                                    
                                 } else if (respostaServidor.startsWith("comprar")) {
                                     String[] ladosComprada = respostaServidor.split(";")[1].split("-");
                                     mao.add(new Pedra(Integer.parseInt(ladosComprada[0]), Integer.parseInt(ladosComprada[1])));
                                     System.out.println("Você comprou uma pedra: [" + ladosComprada[0] + "|" + ladosComprada[1] + "]");
-                                    // Continua no loop, pois o jogador pode tentar jogar com a nova pedra
+                                    
                                 }
                             } else {
                                 System.out.println("Você não possui esta pedra na mão. Tente novamente.");
                             }
                         } else {
-                            System.out.println("Opção inválida. Digite 'jogar' ou 'passar'.");
+                            System.out.println("Opção inválida. Digite 'j' ou 'p'.");
                         }
                     }
-                    suaVez = false; // Se a jogada for validada ou o passar aceito, a vez termina
+                    suaVez = false; 
                 }
             }
-        } catch (SocketException e) {
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.err.println("Erro no formato da mensagem do servidor. Mensagem incompleta.");
+            // Tentar recuperar ou finalizar o jogo
+            fim = true;
+        }catch (SocketException e) {
             System.err.println("Conexão com o servidor perdida: " + e.getMessage());
-            // Lidar com a desconexão: informar o usuário, desabilitar o jogo, talvez tentar reconectar
-            fim = true; // Encerra o loop do jogo
+            fim = true; 
         } catch (IOException e) {
             System.err.println("Erro de comunicação durante o jogo: " + e.getMessage());
             e.printStackTrace();
@@ -237,7 +248,6 @@ public class JogoDomino {
         } catch (NumberFormatException e) {
             System.err.println("Erro na entrada de dados (número inválido): " + e.getMessage());
             System.out.println("Por favor, digite números válidos para os lados da pedra.");
-            // Não seta fim = true, permite que o jogador tente novamente
         } catch (Exception e) {
             System.err.println("Um erro inesperado ocorreu durante o jogo: " + e.getMessage());
             e.printStackTrace();
@@ -282,11 +292,11 @@ public class JogoDomino {
         if (resposta == 'S') {
             try {
                 if (servidorConexao != null && !servidorConexao.isClosed()) {
-                    servidorConexao.close(); // Fecha a conexão anterior para o servidor lidar com a reconexão
+                    servidorConexao.close(); 
                 }
-                conectar(); // Reconecta ao servidor para um novo jogo
-                iniciar(); // Reinicia o estado local do jogo
-                jogar(); // Inicia o novo jogo
+                conectar(); 
+                iniciar(); 
+                jogar(); 
             } catch (ConnectException e) {
                 System.err.println("Não foi possível reconectar ao servidor para um novo jogo. " + e.getMessage());
                 System.exit(1);
@@ -327,13 +337,51 @@ public class JogoDomino {
         }
         System.out.println();
     }
+    
+    private boolean adicionarNaMesa(int ladoA, int ladoB, String ladoMesa) {
+        try {
+            Pedra nova = new Pedra(ladoA, ladoB);
+
+            if (mesa.isEmpty()) {
+                mesa.add(nova);
+                return true;
+            }
+
+            boolean jogandoNaEsquerda = ladoMesa.equalsIgnoreCase("l");
+            int valorEncaixe = jogandoNaEsquerda ? mesa.get(0).getLadoA() : mesa.get(mesa.size()-1).getLadoB();
+
+            if (nova.podeEncaixarEsquerda(valorEncaixe) || nova.podeEncaixarDireita(valorEncaixe)) {
+                nova.ajustarParaEncaixe(valorEncaixe, jogandoNaEsquerda);
+
+                if (jogandoNaEsquerda) {
+                    mesa.add(0, nova);
+                } else {
+                    mesa.add(nova);
+                }
+                return true;
+            }
+            return false;
+        } catch (Exception e) {
+            System.err.println("Erro ao adicionar pedra: " + e.getMessage());
+            return false;
+        }
+    }
+
 
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("\nMESA:\n");
-        for (Pedra p : mesa) {
-            sb.append("[").append(p.getLadoA()).append("|").append(p.getLadoB()).append("] ");
+
+        if (mesa.isEmpty()) {
+            sb.append("[---- MESA VAZIA ----]");
+        } else {
+            for (int i = 0; i < mesa.size(); i++) {
+                sb.append(mesa.get(i).toString());
+                if (i < mesa.size() - 1) {
+                    sb.append("-");
+                }
+            }
         }
         sb.append("\n");
         return sb.toString();
