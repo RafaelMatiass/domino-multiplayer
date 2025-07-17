@@ -1,19 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author rafaelmatias
- */
-
 package jogo;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ConnectException; 
 import java.net.InetAddress;
 import java.net.Socket;
 import java.net.SocketException; 
@@ -42,18 +31,11 @@ public class JogoDomino {
             conectar();
             iniciar();
             jogar();
-        } catch (ConnectException e) {
-            System.err.println("Não foi possível conectar ao servidor." + e.getMessage());
-            System.exit(1); 
-        } catch (IOException e) {
+        }  catch (IOException e) {
             System.err.println("Erro de comunicação com o servidor ao iniciar o jogo: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
-        } catch (ClassNotFoundException e) {
-            System.err.println("Erro de protocolo (classe não encontrada) ao iniciar o jogo: " + e.getMessage());
-            e.printStackTrace();
-            System.exit(1);
-        } catch (Exception e) {
+        }  catch (Exception e) {
             System.err.println("Ocorreu um erro inesperado ao iniciar o jogo: " + e.getMessage());
             e.printStackTrace();
             System.exit(1);
@@ -85,18 +67,13 @@ public class JogoDomino {
 
             System.out.println("Você é o Jogador: " + jogadorId);
             System.out.println(suaVez ? "Você começa jogando!" : "Aguarde sua vez...");
-        } catch (ConnectException e) {
-            throw new ConnectException("Falha na conexão com o servidor. " + e.getMessage());
         } catch (IOException e) {
             throw new IOException("Erro de I/O ao conectar com o servidor: " + e.getMessage(), e);
-        } catch (ClassNotFoundException e) {
-            throw new ClassNotFoundException("Erro ao receber informações iniciais do servidor: " + e.getMessage(), e);
         }
     }
 
     private void iniciar() {
         mesa = new ArrayList<>();
-        // mao = new ArrayList<>(); // A mão agora é preenchida no conectar()
         fim = false;
     }
 
@@ -114,18 +91,32 @@ public class JogoDomino {
                     switch (infoRecebida[0]) {
                         case "fim":
                             fim = true;
-                            exibirResultadoFinal(infoRecebida[1]);
+                            String vencedorIdOuEmpate = infoRecebida[1];
+                            exibirResultadoFinal(vencedorIdOuEmpate);
+
                             break;
                         case "comprar":
-                            String[] ladosPedraComprada = infoRecebida[1].split("-");
-                            Pedra pedraComprada = new Pedra(Integer.parseInt(ladosPedraComprada[0]), Integer.parseInt(ladosPedraComprada[1]));
-                            mao.add(pedraComprada);
-                            System.out.println("Você comprou uma pedra: [" + pedraComprada.getLadoA() + "|" + pedraComprada.getLadoB() + "]");
-                            if (infoRecebida.length > 2 && infoRecebida[2].equals("passar")) {
-                                System.out.println("O outro jogador passou a vez.");
-                                suaVez = true;
+                            if (infoRecebida.length == 3 &&
+                                (infoRecebida[1].equals("J1") || infoRecebida[1].equals("J2"))) {
+
+                                String jogadorQueComprou = infoRecebida[1];
+                                String ladosPedraCompradaStr = infoRecebida[2]; 
+
+                                System.out.println("O jogador " + jogadorQueComprou + " comprou uma pedra: [" + ladosPedraCompradaStr + "] e ainda é a vez dele.");
+
                             } else {
-                                continue;
+                                String[] ladosPedraComprada = infoRecebida[1].split("-");
+                                Pedra pedraComprada = new Pedra(Integer.parseInt(ladosPedraComprada[0]), Integer.parseInt(ladosPedraComprada[1]));
+                                mao.add(pedraComprada);
+                                System.out.println("Você comprou uma pedra: [" + pedraComprada.getLadoA() + "|" + pedraComprada.getLadoB() + "]");
+
+                                if (infoRecebida.length > 2 && infoRecebida[2].equals("passar")) {
+                                    System.out.println("O outro jogador passou a vez.");
+                                    suaVez = true; 
+                                } else {
+                                    // Se você comprou uma pedra e ainda tem jogadas válidas, sua vez continua.
+                                    continue; 
+                                }
                             }
                             break;
                         case "J1":
@@ -153,10 +144,6 @@ public class JogoDomino {
                         case "ok":
                             System.out.println(infoRecebida[1]);
                             break;
-                        case "erro":
-                            System.out.println("Mensagem do servidor: " + infoRecebida[1]);
-                            suaVez = true; 
-                            continue;
                         default:
                             System.out.println("Mensagem desconhecida do servidor: " + mensagemRecebida);
                             break;
@@ -177,6 +164,7 @@ public class JogoDomino {
                         if (acao.equalsIgnoreCase("p")) {
                             servidorSaida.writeObject(jogadorId + ";passar");
                             jogadaValidaCliente = true; 
+                            
                         } else if (acao.equalsIgnoreCase("j")) {
                             System.out.print("Informe o lado A da pedra: ");
                             int ladoA = console.nextInt();
@@ -207,7 +195,6 @@ public class JogoDomino {
                                     if (pedraParaRemoverLocal != null) {
                                         mao.remove(pedraParaRemoverLocal);
                                     }
-                                    // adiciono a mesa também a minha própria jogada
                                     adicionarNaMesa(ladoA, ladoB, ladoMesa);
 
                                     jogadaValidaCliente = true;
@@ -221,7 +208,7 @@ public class JogoDomino {
                                     
                                 }
                             } else {
-                                System.out.println("Você não possui esta pedra na mão. Tente novamente.");
+                                System.out.println("\nVocê não possui esta pedra na mão. Tente novamente.\n");
                             }
                         } else {
                             System.out.println("Opção inválida. Digite 'j' ou 'p'.");
@@ -230,25 +217,14 @@ public class JogoDomino {
                     suaVez = false; 
                 }
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.err.println("Erro no formato da mensagem do servidor. Mensagem incompleta.");
-            // Tentar recuperar ou finalizar o jogo
-            fim = true;
-        }catch (SocketException e) {
+        } catch (SocketException e) {
             System.err.println("Conexão com o servidor perdida: " + e.getMessage());
             fim = true; 
         } catch (IOException e) {
             System.err.println("Erro de comunicação durante o jogo: " + e.getMessage());
             e.printStackTrace();
             fim = true;
-        } catch (ClassNotFoundException e) {
-            System.err.println("Erro de protocolo (classe não encontrada) durante o jogo: " + e.getMessage());
-            e.printStackTrace();
-            fim = true;
-        } catch (NumberFormatException e) {
-            System.err.println("Erro na entrada de dados (número inválido): " + e.getMessage());
-            System.out.println("Por favor, digite números válidos para os lados da pedra.");
-        } catch (Exception e) {
+        }  catch (Exception e) {
             System.err.println("Um erro inesperado ocorreu durante o jogo: " + e.getMessage());
             e.printStackTrace();
             fim = true;
@@ -297,15 +273,8 @@ public class JogoDomino {
                 conectar(); 
                 iniciar(); 
                 jogar(); 
-            } catch (ConnectException e) {
-                System.err.println("Não foi possível reconectar ao servidor para um novo jogo. " + e.getMessage());
-                System.exit(1);
             } catch (IOException e) {
                 System.err.println("Erro de I/O ao tentar reiniciar o jogo: " + e.getMessage());
-                e.printStackTrace();
-                System.exit(1);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Erro de protocolo ao reiniciar o jogo: " + e.getMessage());
                 e.printStackTrace();
                 System.exit(1);
             } catch (Exception e) {

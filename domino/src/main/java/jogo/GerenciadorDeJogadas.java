@@ -1,19 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-
-/**
- *
- * @author rafaelmatias
- */
-
 package jogo;
 
 import java.io.IOException; 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.List;
 import exceptions.JogadaInvalidaException; 
 import exceptions.PoteVazioException; 
 
@@ -76,7 +65,7 @@ public class GerenciadorDeJogadas implements Runnable {
                         String ladoMesa = info[2];
 
                         if (mesaDeJogo.aplicarJogada(remetenteId, ladoA, ladoB, ladoMesa)) {
-                            outOutroJogador.writeObject(remetenteId + ";" + ladoA + "-" + ladoB);
+                            outOutroJogador.writeObject(remetenteId + ";" + ladoA + "-" + ladoB + ";" + ladoMesa);
                             mesaDeJogo.setProximoJogador();
                             outMeuJogador.writeObject("ok;Jogada realizada com sucesso.");
                         }
@@ -91,29 +80,25 @@ public class GerenciadorDeJogadas implements Runnable {
                 String resultado = mesaDeJogo.verificarFimDeJogo();
                 if (resultado != null) {
                     outMeuJogador.writeObject("fim;" + resultado);
+                    outMeuJogador.flush();
+                    
                     outOutroJogador.writeObject("fim;" + resultado);
+                    outOutroJogador.flush();
                     System.out.println("Jogo finalizado. Vencedor: " + resultado);
                     // Para um jogo real, você pode querer fechar os sockets ou reiniciar o jogo aqui
                     // Idealmente, um "game over" seria tratado de forma mais elegante para permitir novo jogo
-                    break; // Sai do loop para finalizar a thread de comunicação
+                    break; 
                 }
 
             } 
         } catch (IOException e) {
             System.err.println("Erro de I/O no GerenciadorDeJogadas para " + meuId + ": " + e.getMessage());
-            // Aqui você lidaria com a desconexão do cliente.
-            // Ex: remover o jogador do jogo, notificar o outro jogador.
-        } catch (ClassNotFoundException e) {
-            // Erro de desserialização, geralmente indica uma incompatibilidade de classe.
-            System.err.println("Erro de desserialização no GerenciadorDeJogadas para " + meuId + ": " + e.getMessage());
-            e.printStackTrace();
         } catch (Exception e) {
-            // Captura qualquer outra exceção não esperada (bugs, erros de lógica não tratados)
+            // Captura qualquer outra exceção não esperada
             System.err.println("Erro inesperado no GerenciadorDeJogadas para " + meuId + ": " + e.getMessage());
             e.printStackTrace();
         } finally {
             // Lógica de limpeza, se necessário (ex: fechar streams, sockets)
-            // Cuidado ao fechar streams aqui, pois podem ser compartilhadas.
         }
     }
 }

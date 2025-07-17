@@ -1,10 +1,5 @@
 package jogo;
 
-/**
- *
- * @author rafaelmatias
- */
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +22,7 @@ public class MesaDeJogo {
         this.mesa = new ArrayList<>();
         this.maosDosJogadores = new HashMap<>();
         this.pote = new ArrayList<>();
-        List<Pedra> todasAsPedras = ConjuntoPedras.gerarPedras(); // Recupera as Pedras geradas para distribuir aos jogadores
+        List<Pedra> todasAsPedras = ConjuntoPedras.gerarPedras();
         Collections.shuffle(todasAsPedras, new Random()); 
 
         for (int i = 0; i < todasAsPedras.size(); i++) {
@@ -36,7 +31,7 @@ public class MesaDeJogo {
             } else if (i >= NUM_PEDRAS_INICIAIS && i < (NUM_PEDRAS_INICIAIS * 2)) {
                 adicionarPedraNaMao("J2", todasAsPedras.get(i));
             } else {
-                pote.add(todasAsPedras.get(i)); // Forma o pote para comprar
+                pote.add(todasAsPedras.get(i)); 
             }
         }
         
@@ -89,53 +84,42 @@ public class MesaDeJogo {
         if (!encontrouPedra) {
             throw new JogadaInvalidaException("Você não possui a pedra [" + pedraA + "|" + pedraB + "] na sua mão.");
         }
-        
-    
+
         if (mesa.isEmpty()) {
-            mesa.add(pedraJogada);
-            maoDoJogador.remove(pedraParaRemover);
-            return true;
+            mesa.add(pedraJogada); 
         } else {
-            Pedra pontaEsquerda = mesa.get(0);
-            Pedra pontaDireita = mesa.get(mesa.size() - 1);
+
+            int valorEncaixeEsquerda = mesa.get(0).getLadoA();
+            int valorEncaixeDireita = mesa.get(mesa.size() - 1).getLadoB();
 
             boolean jogadaValida = false;
-            Pedra pedraParaMesa = pedraJogada; 
 
             if (ladoMesa.equalsIgnoreCase("l")) {
-                if (pedraJogada.getLadoA() == pontaEsquerda.getLadoA()) {
-                    pedraParaMesa = new Pedra(pedraJogada.getLadoB(), pedraJogada.getLadoA());
-                    jogadaValida = true;
-                } else if (pedraJogada.getLadoB() == pontaEsquerda.getLadoA()) {
-                    pedraParaMesa = pedraJogada;
+                if (pedraJogada.podeEncaixarEsquerda(valorEncaixeEsquerda) || pedraJogada.podeEncaixarDireita(valorEncaixeEsquerda)) {
+                    
+                    // Ajusta a orientação da pedra antes de adicioná-la à mesa
+                    pedraJogada.ajustarParaEncaixe(valorEncaixeEsquerda, true);
+                    mesa.add(0, pedraJogada); 
                     jogadaValida = true;
                 }
             } else if (ladoMesa.equalsIgnoreCase("r")) {
-                if (pedraJogada.getLadoA() == pontaDireita.getLadoB()) {
-                    pedraParaMesa = pedraJogada;
-                    jogadaValida = true;
-                } else if (pedraJogada.getLadoB() == pontaDireita.getLadoB()) {
-                    pedraParaMesa = new Pedra(pedraJogada.getLadoB(), pedraJogada.getLadoA());
+                if (pedraJogada.podeEncaixarEsquerda(valorEncaixeDireita) || pedraJogada.podeEncaixarDireita(valorEncaixeDireita)) {
+
+                    pedraJogada.ajustarParaEncaixe(valorEncaixeDireita, false);
+                    mesa.add(pedraJogada); 
                     jogadaValida = true;
                 }
             }
 
-            if (jogadaValida) {
-                mesa.add(ladoMesa.equalsIgnoreCase("l") ? 0 : mesa.size(), pedraParaMesa); 
-                maoDoJogador.remove(pedraParaRemover);
-                return true;
-            } else {
+            if (!jogadaValida) {
                 throw new JogadaInvalidaException("Pedra [" + pedraA + "|" + pedraB + "] não encaixa no lado " + ladoMesa + " da mesa.");
             }
         }
+
+        maoDoJogador.remove(pedraParaRemover);
+        return true;
     }
     
-    /**
-     * Verifica se um jogador pode "passar" (não tem jogadas válidas na mão).
-     * Não implementa a lógica de compra de pedras do pote ainda.
-     * @param jogadorId O ID do jogador.
-     * @return true se o jogador não tiver jogadas válidas com as pedras da mão, false caso contrário.
-     */
     public boolean podePassar(String jogadorId) {
         List<Pedra> maoDoJogador = maosDosJogadores.get(jogadorId);
         if (maoDoJogador == null || maoDoJogador.isEmpty()) {
@@ -152,17 +136,12 @@ public class MesaDeJogo {
         for (Pedra p : maoDoJogador) {
             if (p.getLadoA() == pontaEsquerda || p.getLadoB() == pontaEsquerda ||
                 p.getLadoA() == pontaDireita || p.getLadoB() == pontaDireita) {
-                return false; // Encontrou uma jogada válida
+                return false; 
             }
         }
         return true; 
     }
     
-    /**
-     * Tenta comprar uma pedra do pote.
-     * @param jogadorId O ID do jogador que está comprando.
-     * @return A pedra comprada, ou null se o pote estiver vazio.
-     */
     public Pedra comprarPedra(String jogadorId) throws PoteVazioException {
         if (pote.isEmpty()) {
             throw new PoteVazioException("O pote de compras está vazio. Não é possível comprar mais pedras.");
@@ -172,10 +151,6 @@ public class MesaDeJogo {
         return pedraComprada;
     }
 
-    /**
-     * Verifica as condições de término do jogo (alguém bateu ou trancou).
-     * @return O ID do vencedor ("J1", "J2", "empate") ou null se o jogo não terminou.
-     */
     public String verificarFimDeJogo() {
         for (Map.Entry<String, List<Pedra>> entry : maosDosJogadores.entrySet()) {
             if (entry.getValue().isEmpty()) {
@@ -183,10 +158,7 @@ public class MesaDeJogo {
             }
         }
 
-        // Verificar se o jogo "trancou" (ninguém consegue jogar e pote vazio)
-        // Esta lógica é mais complexa e precisaria verificar se ambos os jogadores não têm jogadas válidas
-        // e se o pote está vazio. Por simplicidade inicial, vamos verificar apenas se o pote está vazio
-        // e se nenhum jogador pode jogar.
+        // Verificar se o jogo "trancou" (Implementar)
         boolean jogador1PodeJogar = false;
         for (Pedra p : maosDosJogadores.get("J1")) {
             if (podeJogarPedra(p, mesa)) {
