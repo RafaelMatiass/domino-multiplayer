@@ -112,11 +112,11 @@ public class JogoDomino {
 
                                 if (infoRecebida.length > 2 && infoRecebida[2].equals("passar")) {
                                     System.out.println("O outro jogador passou a vez.");
-                                    suaVez = true; 
                                 } else {
-                                    // Se você comprou uma pedra e ainda tem jogadas válidas, sua vez continua.
-                                    continue; 
+                                    System.out.println("Você ainda tem jogadas válidas e continua com a vez.");
                                 }
+
+                                suaVez = true;
                             }
                             break;
                         case "J1":
