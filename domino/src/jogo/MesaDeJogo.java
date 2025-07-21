@@ -6,24 +6,24 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import exceptions.JogadaInvalidaException; 
-import exceptions.PoteVazioException; 
+import exceptions.JogadaInvalidaException;
+import exceptions.PoteVazioException;
 
 public class MesaDeJogo {
 
-    private List<Pedra> mesa; 
-    private Map<String, List<Pedra>> maosDosJogadores; 
+    private List<Pedra> mesa;
+    private Map<String, List<Pedra>> maosDosJogadores;
     private List<Pedra> pote; // Pedras para compra
-    private String jogadorAtual; 
+    private String jogadorAtual;
 
-    private final int NUM_PEDRAS_INICIAIS = 7; 
+    private final int NUM_PEDRAS_INICIAIS = 7;
 
     public MesaDeJogo() {
         this.mesa = new ArrayList<>();
         this.maosDosJogadores = new HashMap<>();
         this.pote = new ArrayList<>();
         List<Pedra> todasAsPedras = ConjuntoPedras.gerarPedras();
-        Collections.shuffle(todasAsPedras, new Random()); 
+        Collections.shuffle(todasAsPedras, new Random());
 
         for (int i = 0; i < todasAsPedras.size(); i++) {
             if (i < NUM_PEDRAS_INICIAIS) {
@@ -31,15 +31,23 @@ public class MesaDeJogo {
             } else if (i >= NUM_PEDRAS_INICIAIS && i < (NUM_PEDRAS_INICIAIS * 2)) {
                 adicionarPedraNaMao("J2", todasAsPedras.get(i));
             } else {
-                pote.add(todasAsPedras.get(i)); 
+                pote.add(todasAsPedras.get(i));
             }
         }
-        
-        this.jogadorAtual = "J1"; 
+
+        this.jogadorAtual = "J1";
     }
 
     private void adicionarPedraNaMao(String jogadorId, Pedra pedra) {
         maosDosJogadores.computeIfAbsent(jogadorId, k -> new ArrayList<>()).add(pedra);
+    }
+
+    private void removerPedraDaMao(String jogadorId, Pedra pedraParaRemover) throws JogadaInvalidaException {
+        List<Pedra> maoDoJogador = maosDosJogadores.get(jogadorId);
+        if (maoDoJogador == null || !maoDoJogador.remove(pedraParaRemover)) {
+            // Esta exceção é um fallback, a pedraParaRemover já deveria ter sido encontrada
+            throw new JogadaInvalidaException("Erro interno: pedra não encontrada na mão para remoção.");
+        }
     }
 
     public List<Pedra> getMesa() {
@@ -61,34 +69,37 @@ public class MesaDeJogo {
             jogadorAtual = "J1";
         }
     }
+    
+    public boolean isPoteVazio() {
+        return pote.isEmpty(); 
+    }
 
     public boolean aplicarJogada(String jogadorId, int pedraA, int pedraB, String ladoMesa) throws JogadaInvalidaException {
         if (!jogadorId.equals(this.jogadorAtual)) {
             throw new JogadaInvalidaException("Não é a sua vez de jogar!");
         }
 
-        Pedra pedraJogada = new Pedra(pedraA, pedraB);
         List<Pedra> maoDoJogador = maosDosJogadores.get(jogadorId);
 
-        boolean encontrouPedra = false;
         Pedra pedraParaRemover = null;
         for (Pedra p : maoDoJogador) {
             if ((p.getLadoA() == pedraA && p.getLadoB() == pedraB) ||
                 (p.getLadoA() == pedraB && p.getLadoB() == pedraA)) {
-                encontrouPedra = true;
                 pedraParaRemover = p;
                 break;
             }
         }
 
-        if (!encontrouPedra) {
+        if (pedraParaRemover == null) {
             throw new JogadaInvalidaException("Você não possui a pedra [" + pedraA + "|" + pedraB + "] na sua mão.");
         }
 
-        if (mesa.isEmpty()) {
-            mesa.add(pedraJogada); 
-        } else {
+        
+        Pedra pedraJogada = new Pedra(pedraA, pedraB);
 
+        if (mesa.isEmpty()) {
+            mesa.add(pedraJogada);
+        } else {
             int valorEncaixeEsquerda = mesa.get(0).getLadoA();
             int valorEncaixeDireita = mesa.get(mesa.size() - 1).getLadoB();
 
@@ -96,17 +107,14 @@ public class MesaDeJogo {
 
             if (ladoMesa.equalsIgnoreCase("l")) {
                 if (pedraJogada.podeEncaixarEsquerda(valorEncaixeEsquerda) || pedraJogada.podeEncaixarDireita(valorEncaixeEsquerda)) {
-                    
-                    // Ajusta a orientação da pedra antes de adicioná-la à mesa
                     pedraJogada.ajustarParaEncaixe(valorEncaixeEsquerda, true);
-                    mesa.add(0, pedraJogada); 
+                    mesa.add(0, pedraJogada);
                     jogadaValida = true;
                 }
             } else if (ladoMesa.equalsIgnoreCase("r")) {
                 if (pedraJogada.podeEncaixarEsquerda(valorEncaixeDireita) || pedraJogada.podeEncaixarDireita(valorEncaixeDireita)) {
-
                     pedraJogada.ajustarParaEncaixe(valorEncaixeDireita, false);
-                    mesa.add(pedraJogada); 
+                    mesa.add(pedraJogada);
                     jogadaValida = true;
                 }
             }
@@ -116,18 +124,18 @@ public class MesaDeJogo {
             }
         }
 
-        maoDoJogador.remove(pedraParaRemover);
+        removerPedraDaMao(jogadorId, pedraParaRemover);
         return true;
     }
-    
+
     public boolean podePassar(String jogadorId) {
         List<Pedra> maoDoJogador = maosDosJogadores.get(jogadorId);
         if (maoDoJogador == null || maoDoJogador.isEmpty()) {
-            return false; 
+            return false;
         }
 
         if (mesa.isEmpty()) {
-            return false; 
+            return false;
         }
 
         int pontaEsquerda = mesa.get(0).getLadoA();
@@ -136,12 +144,13 @@ public class MesaDeJogo {
         for (Pedra p : maoDoJogador) {
             if (p.getLadoA() == pontaEsquerda || p.getLadoB() == pontaEsquerda ||
                 p.getLadoA() == pontaDireita || p.getLadoB() == pontaDireita) {
-                return false; 
+                return false;
             }
         }
-        return true; 
+        // Se nenhuma pedra na mão pode ser jogada, ele pode passar.
+        return true;
     }
-    
+
     public Pedra comprarPedra(String jogadorId) throws PoteVazioException {
         if (pote.isEmpty()) {
             throw new PoteVazioException("O pote de compras está vazio. Não é possível comprar mais pedras.");
@@ -154,24 +163,28 @@ public class MesaDeJogo {
     public String verificarFimDeJogo() {
         for (Map.Entry<String, List<Pedra>> entry : maosDosJogadores.entrySet()) {
             if (entry.getValue().isEmpty()) {
-                return entry.getKey();
+                return entry.getKey(); // Jogador sem pedras na mão venceu
             }
         }
 
-        // Verificar se o jogo "trancou" (Implementar)
+        // Verificar se o jogo "trancou" (ninguém pode jogar e o pote está vazio)
         boolean jogador1PodeJogar = false;
-        for (Pedra p : maosDosJogadores.get("J1")) {
-            if (podeJogarPedra(p, mesa)) {
-                jogador1PodeJogar = true;
-                break;
+        if (maosDosJogadores.containsKey("J1")) {
+            for (Pedra p : maosDosJogadores.get("J1")) {
+                if (podeJogarPedra(p, mesa)) {
+                    jogador1PodeJogar = true;
+                    break;
+                }
             }
         }
-        
+
         boolean jogador2PodeJogar = false;
-        for (Pedra p : maosDosJogadores.get("J2")) {
-            if (podeJogarPedra(p, mesa)) {
-                jogador2PodeJogar = true;
-                break;
+        if (maosDosJogadores.containsKey("J2")) {
+            for (Pedra p : maosDosJogadores.get("J2")) {
+                if (podeJogarPedra(p, mesa)) {
+                    jogador2PodeJogar = true;
+                    break;
+                }
             }
         }
 
@@ -190,22 +203,25 @@ public class MesaDeJogo {
 
         return null; 
     }
-    
+
     private boolean podeJogarPedra(Pedra pedra, List<Pedra> mesaAtual) {
         if (mesaAtual.isEmpty()) {
-            return true;
+            return true; 
         }
         int pontaEsquerda = mesaAtual.get(0).getLadoA();
         int pontaDireita = mesaAtual.get(mesaAtual.size() - 1).getLadoB();
-        
+
         return (pedra.getLadoA() == pontaEsquerda || pedra.getLadoB() == pontaEsquerda ||
                 pedra.getLadoA() == pontaDireita || pedra.getLadoB() == pontaDireita);
     }
 
     private int calcularPontos(String jogadorId) {
         int pontos = 0;
-        for (Pedra p : maosDosJogadores.get(jogadorId)) {
-            pontos += p.getLadoA() + p.getLadoB();
+        List<Pedra> mao = maosDosJogadores.get(jogadorId);
+        if (mao != null) {
+            for (Pedra p : mao) {
+                pontos += p.getLadoA() + p.getLadoB();
+            }
         }
         return pontos;
     }

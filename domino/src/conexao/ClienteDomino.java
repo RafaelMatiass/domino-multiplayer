@@ -1,9 +1,9 @@
 package conexao;
 
-import jogo.JogoDomino;
+import jogo.gui.ClienteDominoGUI;
 
 public class ClienteDomino {
     public static void main(String[] args) throws Exception {
-        JogoDomino jogo = new JogoDomino();
+        ClienteDominoGUI.main(args);
     }
 }
