@@ -5,4 +5,3 @@ public class JogadaInvalidaException extends Exception {
         super(message);
     }
 }
-
