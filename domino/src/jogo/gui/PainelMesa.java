@@ -1,14 +1,10 @@
 package jogo.gui;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import jogo.Pedra;
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import jogo.Pedra;
 
 public class PainelMesa extends JPanel {
     private List<Pedra> pedras;
@@ -19,9 +15,14 @@ public class PainelMesa extends JPanel {
     }
 
     private void configurarPainel() {
-        setBackground(new Color(34, 139, 34)); // Verde mesa
+        setBackground(new Color(34, 139, 34)); // Verde para a mesa
         setBorder(BorderFactory.createLineBorder(Color.BLACK, 2));
-        setPreferredSize(new Dimension(800, 300));
+        setLayout(new FlowLayout(FlowLayout.CENTER, 3, 5)); 
+    }
+
+    public void setPedrasMesa(List<Pedra> novasPedras) {
+        this.pedras = new ArrayList<>(novasPedras);
+        atualizarMesaGUI();
     }
 
     public void adicionarPedra(Pedra pedra, boolean esquerda) {
@@ -30,74 +31,60 @@ public class PainelMesa extends JPanel {
         } else {
             pedras.add(pedra);
         }
-        repaint(); 
     }
 
     public void limparMesa() {
         pedras.clear();
-        repaint();
+        atualizarMesaGUI();
     }
 
-    @Override
-    protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
+    private void atualizarMesaGUI() {
+        this.removeAll(); 
 
         if (pedras.isEmpty()) {
-            desenharMesaVazia(g);
+            JLabel msgVazia = new JLabel("Mesa vazia - Aguardando primeira jogada");
+            msgVazia.setForeground(Color.WHITE);
+            this.add(msgVazia);
         } else {
-            desenharPedras(g);
+            for (int i = 0; i < pedras.size(); i++) {
+                Pedra pedra = pedras.get(i);
+                JPanel painelPedra = new JPanel(new GridLayout(1, 2));
+                painelPedra.setBackground(Color.WHITE); // Fundo da peça
+                painelPedra.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
+
+                JLabel ladoA_img = new JLabel(new ImageIcon(getClass().getResource("/images/" + pedra.getLadoA() + ".png")));
+                JLabel ladoB_img = new JLabel(new ImageIcon(getClass().getResource("/images/" + pedra.getLadoB() + ".png")));
+
+                // Carroções não precisam ser girados visualmente.
+                if (pedra.ehCarrocao()) {
+                    painelPedra.add(ladoA_img);
+                    painelPedra.add(ladoB_img);
+                } else if (i == 0) { 
+                    if (pedras.size() > 1 && pedra.getLadoA() == pedras.get(1).getLadoA() || pedra.getLadoA() == pedras.get(1).getLadoB()) {
+                        painelPedra.add(ladoB_img);
+                        painelPedra.add(ladoA_img);
+                    } else {
+                        painelPedra.add(ladoA_img);
+                        painelPedra.add(ladoB_img);
+                    }
+                } else if (i == pedras.size() - 1) { 
+                    if (pedras.size() > 1 && pedra.getLadoB() == pedras.get(i-1).getLadoA() || pedra.getLadoB() == pedras.get(i-1).getLadoB()) {
+                        painelPedra.add(ladoB_img);
+                        painelPedra.add(ladoA_img);
+                    } else {
+                        painelPedra.add(ladoA_img);
+                        painelPedra.add(ladoB_img);
+                    }
+                }
+                else {
+                    painelPedra.add(ladoA_img);
+                    painelPedra.add(ladoB_img);
+                }
+                
+                this.add(painelPedra);
+            }
         }
-    }
-
-    private void desenharMesaVazia(Graphics g) {
-        g.setColor(Color.WHITE);
-        String texto = "Mesa vazia - Aguardando primeira jogada";
-        FontMetrics fm = g.getFontMetrics();
-        int textWidth = fm.stringWidth(texto);
-        int textHeight = fm.getHeight();
-        g.drawString(texto, (getWidth() - textWidth) / 2, (getHeight() + textHeight) / 2);
-    }
-
-    private void desenharPedras(Graphics g) {
-
-        int larguraPedraComEspacamento = 60 + 2;
-
-        int larguraTotalDasPedras = pedras.size() * larguraPedraComEspacamento;
-  
-        int startX = (getWidth() - larguraTotalDasPedras) / 2;
-       
-        int centroY = getHeight() / 2 - 15;
-
-        int currentX = startX;
-        for (Pedra pedra : pedras) {
-            desenharPedra(g, pedra, currentX, centroY);
-            currentX += larguraPedraComEspacamento; 
-        }
-    }
-
-    private void desenharPedra(Graphics g, Pedra pedra, int x, int y) {
-        g.setColor(Color.WHITE);
-        g.fillRoundRect(x, y, 60, 30, 10, 10); 
-
-        g.setColor(Color.BLACK);
-        g.drawRoundRect(x, y, 60, 30, 10, 10);
-
-        g.drawLine(x + 30, y, x + 30, y + 30);
-
-        desenharPontos(g, pedra.getLadoA(), x + 15, y + 15); 
-        desenharPontos(g, pedra.getLadoB(), x + 45, y + 15); 
-    }
-
-    private void desenharPontos(Graphics g, int valor, int centerX, int centerY) {
-        g.setColor(Color.BLACK);
-        String sValor = String.valueOf(valor);
-        FontMetrics fm = g.getFontMetrics();
-
-        int stringWidth = fm.stringWidth(sValor);
-        int stringHeight = fm.getHeight();
-
-        int textX = centerX - (stringWidth / 2);
-        int textY = centerY + (stringHeight / 2) - fm.getDescent();
-        g.drawString(sValor, textX, textY);
+        this.revalidate();
+        this.repaint();
     }
 }

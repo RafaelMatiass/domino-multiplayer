@@ -31,6 +31,7 @@ public class PainelControles extends JPanel {
             Pedra selecionada = janela.getPainelMao().getPedraSelecionada();
             if (selecionada != null) {
                 janela.jogarPedra(selecionada, true);
+                janela.getPainelMao().limparSelecao(); 
             } else {
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
@@ -40,6 +41,7 @@ public class PainelControles extends JPanel {
             Pedra selecionada = janela.getPainelMao().getPedraSelecionada();
             if (selecionada != null) {
                 janela.jogarPedra(selecionada, false);
+                janela.getPainelMao().limparSelecao(); 
             } else {
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
@@ -51,6 +53,7 @@ public class PainelControles extends JPanel {
                 JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 janela.passarVez();
+                janela.getPainelMao().limparSelecao(); 
             }
         });
 

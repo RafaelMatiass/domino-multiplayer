@@ -1,5 +1,7 @@
 package jogo;
 
+import java.util.Objects;
+
 public class Pedra {
 	
     private int ladoA;
@@ -48,14 +50,28 @@ public class Pedra {
 
     public void ajustarParaEncaixe(int valor, boolean esquerda) {
         if (esquerda) {
-            if (this.ladoB != valor) {
+            if (this.ladoB != valor && this.ladoA == valor) { 
                 this.virar();
             }
         } else {
-            if (this.ladoA != valor) {
+            if (this.ladoA != valor && this.ladoB == valor) { 
                 this.virar();
             }
         }
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Pedra other = (Pedra) obj;
+        return (this.ladoA == other.ladoA && this.ladoB == other.ladoB) ||
+               (this.ladoA == other.ladoB && this.ladoB == other.ladoA);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(Math.min(ladoA, ladoB), Math.max(ladoA, ladoB));
     }
 
     @Override
