@@ -232,4 +232,25 @@ public class MesaDeJogo {
         }
         return sb.toString();
     }
+    
+    private void processarJogadaNaMesa(Pedra pedraJogada, String ladoMesa) throws JogadaInvalidaException {
+    boolean jogandoNaEsquerda = ladoMesa.equalsIgnoreCase("l");
+    int valorEncaixe = jogandoNaEsquerda ? 
+        mesa.get(0).getLadoA() : mesa.get(mesa.size()-1).getLadoB();
+
+    // Verifica se a pedra pode encaixar
+    if (!pedraJogada.podeEncaixarEsquerda(valorEncaixe) && !pedraJogada.podeEncaixarDireita(valorEncaixe)) {
+        throw new JogadaInvalidaException("Pedra " + pedraJogada + " não encaixa no lado " + ladoMesa + " da mesa.");
+    }
+
+    // Ajusta a orientação da pedra
+    pedraJogada.ajustarParaEncaixe(valorEncaixe, jogandoNaEsquerda);
+    
+    // Adiciona na mesa
+    if (jogandoNaEsquerda) {
+        mesa.add(0, pedraJogada);
+    } else {
+        mesa.add(pedraJogada);
+    }
+}
 }

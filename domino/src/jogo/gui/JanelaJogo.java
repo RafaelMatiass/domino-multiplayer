@@ -100,7 +100,11 @@ public class JanelaJogo extends JFrame {
                 System.out.println("Cliente " + jogadorId + ": Recebeu do servidor: " + mensagem);
                 SwingUtilities.invokeLater(() -> processarMensagem(mensagem));
             }
-        }  catch (Exception e) {
+        } catch (SocketException e) {
+            System.out.println("Cliente " + jogadorId + ": Conexão com o servidor foi fechada.");
+        } catch (EOFException e) {
+            System.out.println("Cliente " + jogadorId + ": Conexão terminada pelo servidor.");
+        } catch (Exception e) {
             System.err.println("Cliente " + jogadorId + ": Erro inesperado ao ouvir servidor: " + e.getMessage());
             e.printStackTrace();
             SwingUtilities.invokeLater(() -> {
@@ -127,8 +131,8 @@ public class JanelaJogo extends JFrame {
 
                     Pedra pedraConfirmada = new Pedra(ladoA_confirmada, ladoB_confirmada);
 
-                    mao.remove(pedraConfirmada); // Remove a pedra da mão local
-                    painelMao.setMao(mao); // Atualiza a GUI da mão com a lista nova
+                    mao.remove(pedraConfirmada);
+                    painelMao.setMao(mao);
 
                     painelStatus.atualizarMensagem("Sua jogada: [" + ladoA_confirmada + "|" + ladoB_confirmada + "] realizada com sucesso.");
 
@@ -141,7 +145,7 @@ public class JanelaJogo extends JFrame {
                 String[] ladosComprados = partes[1].split("-");
                 Pedra novaPedraComprada = new Pedra(Integer.parseInt(ladosComprados[0]), Integer.parseInt(ladosComprados[1]));
                 mao.add(novaPedraComprada);
-                painelMao.setMao(mao); // Atualiza a GUI da mão com a lista nova
+                painelMao.setMao(mao);
                 painelStatus.atualizarMensagem("Você comprou uma pedra: [" + novaPedraComprada.getLadoA() + "|" + novaPedraComprada.getLadoB() + "]");
                 break;
 
@@ -163,8 +167,8 @@ public class JanelaJogo extends JFrame {
                         mesaAtual.add(new Pedra(Integer.parseInt(lados[0]), Integer.parseInt(lados[1])));
                     }
                 }
-                painelMesa.setPedrasMesa(mesaAtual); 
-                System.out.println("Mesa atualizada no cliente " + jogadorId + ": " + mesaAtual); 
+                System.out.println("Atualizando mesa com " + mesaAtual.size() + " pedras");
+                painelMesa.setPedrasMesa(mesaAtual);
                 break;
 
             case "TURNO": 
@@ -178,12 +182,12 @@ public class JanelaJogo extends JFrame {
                 }
                 painelStatus.atualizarVez(minhaVez);
                 painelControles.habilitarControles(minhaVez);
-                painelMao.limparSelecao(); 
+                painelMao.limparSelecao();
                 break;
 
             case "erro": 
                 JOptionPane.showMessageDialog(this, partes[1], "Erro", JOptionPane.ERROR_MESSAGE);
-                minhaVez = true; // Permite que o jogador tente novamente, se for um erro de jogada inválida
+                minhaVez = true;
                 painelStatus.atualizarVez(minhaVez);
                 painelControles.habilitarControles(minhaVez);
                 break;
@@ -301,5 +305,16 @@ public class JanelaJogo extends JFrame {
 
     public PainelStatus getPainelStatus() {
         return painelStatus;
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            try {
+                new JanelaJogo().setVisible(true);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erro ao iniciar o jogo: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+                e.printStackTrace();
+            }
+        });
     }
 }

@@ -31,6 +31,7 @@ public class PainelMesa extends JPanel {
         } else {
             pedras.add(pedra);
         }
+        atualizarMesaGUI();
     }
 
     public void limparMesa() {
@@ -49,26 +50,35 @@ public class PainelMesa extends JPanel {
             for (int i = 0; i < pedras.size(); i++) {
                 Pedra pedra = pedras.get(i);
                 JPanel painelPedra = new JPanel(new GridLayout(1, 2));
-                painelPedra.setBackground(Color.WHITE); // Fundo da peça
+                painelPedra.setBackground(Color.WHITE);
                 painelPedra.setBorder(BorderFactory.createLineBorder(Color.BLACK, 1));
 
                 JLabel ladoA_img = new JLabel(new ImageIcon(getClass().getResource("/images/" + pedra.getLadoA() + ".png")));
                 JLabel ladoB_img = new JLabel(new ImageIcon(getClass().getResource("/images/" + pedra.getLadoB() + ".png")));
 
-                // Carroções não precisam ser girados visualmente.
-                if (pedra.ehCarrocao()) {
+                // Tratamento especial para primeira peça
+                if (pedras.size() == 1) {
                     painelPedra.add(ladoA_img);
                     painelPedra.add(ladoB_img);
-                } else if (i == 0) { 
-                    if (pedras.size() > 1 && pedra.getLadoA() == pedras.get(1).getLadoA() || pedra.getLadoA() == pedras.get(1).getLadoB()) {
+                } 
+                // Tratamento para carroções
+                else if (pedra.ehCarrocao()) {
+                    painelPedra.add(ladoA_img);
+                    painelPedra.add(ladoB_img);
+                } 
+                // Tratamento para peça mais à esquerda
+                else if (i == 0) {
+                    if (pedra.getLadoA() == pedras.get(1).getLadoA() || pedra.getLadoA() == pedras.get(1).getLadoB()) {
                         painelPedra.add(ladoB_img);
                         painelPedra.add(ladoA_img);
                     } else {
                         painelPedra.add(ladoA_img);
                         painelPedra.add(ladoB_img);
                     }
-                } else if (i == pedras.size() - 1) { 
-                    if (pedras.size() > 1 && pedra.getLadoB() == pedras.get(i-1).getLadoA() || pedra.getLadoB() == pedras.get(i-1).getLadoB()) {
+                } 
+                // Tratamento para peça mais à direita
+                else if (i == pedras.size() - 1) {
+                    if (pedra.getLadoB() == pedras.get(i-1).getLadoA() || pedra.getLadoB() == pedras.get(i-1).getLadoB()) {
                         painelPedra.add(ladoB_img);
                         painelPedra.add(ladoA_img);
                     } else {
@@ -76,6 +86,7 @@ public class PainelMesa extends JPanel {
                         painelPedra.add(ladoB_img);
                     }
                 }
+                // Peças do meio
                 else {
                     painelPedra.add(ladoA_img);
                     painelPedra.add(ladoB_img);
