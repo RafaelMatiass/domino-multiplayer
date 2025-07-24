@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import jogo.Config;
 import jogo.GerenciadorDeJogadas;
+import jogo.HistoricoXML;
 import jogo.MesaDeJogo;
 import jogo.Pedra;
 
@@ -25,6 +26,7 @@ public class ServidorDomino {
         System.out.println("Servidor Dominó Inicializado (" + servidor + ").\n");
 
         MesaDeJogo mesaDeJogo = new MesaDeJogo();
+        HistoricoXML.limpar();
 
         System.out.println("Esperando por conexão (Jogador 1)...");
         Socket jogador1 = servidor.accept();

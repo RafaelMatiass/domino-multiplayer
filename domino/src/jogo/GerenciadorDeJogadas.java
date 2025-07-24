@@ -83,6 +83,7 @@ public class GerenciadorDeJogadas implements Runnable {
                         String ladoMesa = info[2];
 
                         mesaDeJogo.aplicarJogada(remetenteId, ladoA, ladoB, ladoMesa);
+                        HistoricoXML.salvarJogadas(remetenteId, new Pedra(ladoA, ladoB),ladoMesa);
                         System.out.println("Servidor (" + meuId + "): Jogada aplicada por " + remetenteId + ": [" + ladoA + "|" + ladoB + "] no lado " + ladoMesa);
 
                         // Confirmação para o próprio jogador
