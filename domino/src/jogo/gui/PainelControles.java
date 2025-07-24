@@ -19,13 +19,16 @@ public class PainelControles extends JPanel {
         setBackground(new Color(240, 240, 240));
         setBorder(BorderFactory.createTitledBorder("Controles"));
         setPreferredSize(new Dimension(200, 400));
-        setLayout(new GridLayout(3, 1, 10, 10)); 
+        setLayout(new GridLayout(4, 1, 10, 10)); 
     }
 
     private void inicializarComponentes() {
         btnEsquerda = new JButton("Jogar na Esquerda");
         btnDireita = new JButton("Jogar na Direita");
         btnPassar = new JButton("Passar a Vez");
+        JButton btnHistorico = new JButton("Ver Histórico");
+        btnHistorico.addActionListener(e -> new Historico().setVisible(true));
+
 
         btnEsquerda.addActionListener(e -> {
             Pedra selecionada = janela.getPainelMao().getPedraSelecionada();
@@ -60,6 +63,7 @@ public class PainelControles extends JPanel {
         add(btnEsquerda);
         add(btnDireita);
         add(btnPassar);
+        add(btnHistorico); 
     }
 
     public void habilitarControles(boolean habilitar) {

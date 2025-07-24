@@ -19,55 +19,55 @@ public class ServidorDomino {
     private static List<ObjectOutputStream> todosOuts;
 
     public static void main(String[] args) throws Exception {
-
         todosOuts = new ArrayList<>();
-
         ServerSocket servidor = new ServerSocket(Config.getPorta(), 2, InetAddress.getByName(Config.getIp()));
         System.out.println("Servidor Dominó Inicializado (" + servidor + ").\n");
 
-        MesaDeJogo mesaDeJogo = new MesaDeJogo();
-        HistoricoXML.limpar();
+        while (true) {
+            System.out.println("Aguardando novos jogadores...");
 
-        System.out.println("Esperando por conexão (Jogador 1)...");
-        Socket jogador1 = servidor.accept();
-        System.out.println("Conexão recebida: " + jogador1.toString() + ":" + jogador1.getPort() + "\n");
+            todosOuts.clear();
+            MesaDeJogo mesaDeJogo = new MesaDeJogo();
+            HistoricoXML.limpar();
 
-        ObjectOutputStream outJogador1 = new ObjectOutputStream(jogador1.getOutputStream());
-        outJogador1.flush();
-        todosOuts.add(outJogador1); // Adiciona o stream do jogador 1
+            // Jogador 1
+            Socket jogador1 = servidor.accept();
+            ObjectOutputStream out1 = new ObjectOutputStream(jogador1.getOutputStream());
+            out1.flush();
+            ObjectInputStream in1 = new ObjectInputStream(jogador1.getInputStream());
+            todosOuts.add(out1);
+            enviarMaoInicial(out1, mesaDeJogo.getMaoDoJogador("J1"), "J1", true);
 
-        StringBuilder maoJ1 = new StringBuilder("J1;true");
-        for (Pedra p : mesaDeJogo.getMaoDoJogador("J1")) {
-            maoJ1.append(";").append(p.getLadoA()).append("-").append(p.getLadoB());
+            // Jogador 2
+            Socket jogador2 = servidor.accept();
+            ObjectOutputStream out2 = new ObjectOutputStream(jogador2.getOutputStream());
+            out2.flush();
+            ObjectInputStream in2 = new ObjectInputStream(jogador2.getInputStream());
+            todosOuts.add(out2);
+            enviarMaoInicial(out2, mesaDeJogo.getMaoDoJogador("J2"), "J2", false);
+
+            enviarEstadoMesaParaTodos(mesaDeJogo.getStringEstadoMesa());
+
+            // Threads do jogo
+            Thread t1 = new Thread(new GerenciadorDeJogadas("J1", in1, out2, mesaDeJogo, out1));
+            Thread t2 = new Thread(new GerenciadorDeJogadas("J2", in2, out1, mesaDeJogo, out2));
+
+            t1.start();
+            t2.start();
+
+            t1.join();
+            t2.join();
+            System.out.println("Partida finalizada. Reiniciando...\n");
         }
-        outJogador1.writeObject(maoJ1.toString());
+    }
 
-        ObjectInputStream inJogador1 = new ObjectInputStream(jogador1.getInputStream());
-
-        System.out.println("Esperando por conexão (Jogador 2)...");
-        Socket jogador2 = servidor.accept();
-        System.out.println("Conexão recebida: " + jogador2.toString() + ":" + jogador2.getPort() + "\n");
-
-        ObjectOutputStream outJogador2 = new ObjectOutputStream(jogador2.getOutputStream());
-        outJogador2.flush();
-        todosOuts.add(outJogador2); // Adiciona o stream do jogador 2
-
-        StringBuilder maoJ2 = new StringBuilder("J2;false");
-        for (Pedra p : mesaDeJogo.getMaoDoJogador("J2")) {
-            maoJ2.append(";").append(p.getLadoA()).append("-").append(p.getLadoB());
+    private static void enviarMaoInicial(ObjectOutputStream out, List<Pedra> mao, String id, boolean comeca) throws IOException {
+        StringBuilder maoInicial = new StringBuilder(id + ";" + comeca);
+        for (Pedra p : mao) {
+            maoInicial.append(";").append(p.getLadoA()).append("-").append(p.getLadoB());
         }
-        outJogador2.writeObject(maoJ2.toString());
-
-        ObjectInputStream inJogador2 = new ObjectInputStream(jogador2.getInputStream());
-
-        // Aqui estou enviando o estado inicial da mesa para todos os jogadores
-        enviarEstadoMesaParaTodos(mesaDeJogo.getStringEstadoMesa());
-
-        Thread threadJogador1 = new Thread(new GerenciadorDeJogadas("J1", inJogador1, outJogador2, mesaDeJogo, outJogador1));
-        Thread threadJogador2 = new Thread(new GerenciadorDeJogadas("J2", inJogador2, outJogador1, mesaDeJogo, outJogador2));
-
-        threadJogador1.start();
-        threadJogador2.start();
+        out.writeObject(maoInicial.toString());
+        out.flush();
     }
 
     private static void enviarEstadoMesaParaTodos(String estadoMesa) throws IOException {
@@ -75,6 +75,7 @@ public class ServidorDomino {
             out.writeObject(estadoMesa);
             out.flush();
         }
-        System.out.println("Servidor (MAIN): Enviou estado inicial da mesa: " + estadoMesa);
+        System.out.println("Servidor: Enviou estado da mesa: " + estadoMesa);
     }
+
 }
