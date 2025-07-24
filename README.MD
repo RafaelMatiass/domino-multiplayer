@@ -1,8 +1,8 @@
-🎲 DominoVerse - Jogo de Dominó Multiplayer em Java
+🎲 Jogo de Dominó Multiplayer em Java
 Desenvolvido para a disciplina de Desenvolvimento Orientado a Objetos
-Professor: Mário
+
 Equipe:
-✨ Rafael Matias | ✨ Thomas Segreto | ✨ Otávio Baroni
+🎲 Rafael Matias | 🎲 Thomas Segreto | 🎲 Otávio Baroni
 
 🌟 Visão Geral
 DominoVerse é um jogo de dominó multiplayer desenvolvido em Java, onde dois jogadores podem se conectar via rede para desafiar um ao outro em partidas emocionantes!
@@ -69,16 +69,9 @@ Clientes enviam jogadas e recebem atualizações.
 🔹 Sistema de Ranking com histórico de partidas
 🔹 Chat Integrado para comunicação entre jogadores
 
-👨‍💻 Contribuições da Equipe
-Integrante	Contribuição
-Rafael Matias	Lógica do servidor e comunicação em rede
-Thomas Segreto	Regras do jogo e gerenciamento da mesa
-Otávio Baroni	Interface do cliente e validação de jogadas
-🎉 Conclusão
-DominoVerse é mais que um jogo – é um projeto que aplica boas práticas de programação, trabalho em equipe e lógica de jogos em um ambiente multiplayer.
-
 Junte-se a nós e divirta-se com o clássico dominó em uma versão moderna e conectada!
 
 🏁 Vamos jogar? 🚀
 
-📌 Desenvolvido com ❤️ para a disciplina de DOO - UNIVALI
+📌Professor: Mário
+📌 Desenvolvido para a disciplina de DEOO - IFSP AQA
