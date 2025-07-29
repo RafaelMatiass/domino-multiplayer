@@ -91,6 +91,7 @@ public class JanelaJogo extends JFrame {
         painelStatus.atualizarVez(minhaVez);
 
         new Thread(this::ouvirServidor).start();
+        SoundPlayer.playSound("pecas_domino.wav");
     }
 
     private void ouvirServidor() {
@@ -120,6 +121,7 @@ public class JanelaJogo extends JFrame {
         switch (partes[0]) {
             case "jogada": 
                 String jogadorQueJogou = partes[1];
+                SoundPlayer.playSound("peca_recebida.wav"); 
                 painelStatus.atualizarMensagem("Jogador " + jogadorQueJogou + " jogou uma pedra.");
                 break;
 
@@ -133,6 +135,7 @@ public class JanelaJogo extends JFrame {
 
                     mao.remove(pedraConfirmada);
                     painelMao.setMao(mao);
+                    SoundPlayer.playSound("jogada_correta.wav"); 
 
                     painelStatus.atualizarMensagem("Sua jogada: [" + ladoA_confirmada + "|" + ladoB_confirmada + "] realizada com sucesso.");
 
@@ -146,6 +149,7 @@ public class JanelaJogo extends JFrame {
                 Pedra novaPedraComprada = new Pedra(Integer.parseInt(ladosComprados[0]), Integer.parseInt(ladosComprados[1]));
                 mao.add(novaPedraComprada);
                 painelMao.setMao(mao);
+                SoundPlayer.playSound("passar.wav"); 
                 painelStatus.atualizarMensagem("Você comprou uma pedra: [" + novaPedraComprada.getLadoA() + "|" + novaPedraComprada.getLadoB() + "]");
                 break;
 
@@ -186,6 +190,7 @@ public class JanelaJogo extends JFrame {
                 break;
 
             case "erro": 
+                SoundPlayer.playSound("erro.wav");
                 JOptionPane.showMessageDialog(this, partes[1], "Erro", JOptionPane.ERROR_MESSAGE);
                 minhaVez = true;
                 painelStatus.atualizarVez(minhaVez);
@@ -244,8 +249,10 @@ public class JanelaJogo extends JFrame {
             mensagem = "Jogo terminou em empate!";
         } else if (resultado.equals(jogadorId)) {
             mensagem = "VOCÊ VENCEU! Parabéns! :)";
+            SoundPlayer.playSound("vitoria.wav");
         } else {
             mensagem = "Você perdeu. Jogador " + resultado + " venceu! :(";
+            SoundPlayer.playSound("game_over.wav");
         }
 
         JOptionPane.showMessageDialog(this, mensagem, "Fim do Jogo", JOptionPane.INFORMATION_MESSAGE);

@@ -27,7 +27,10 @@ public class PainelControles extends JPanel {
         btnDireita = new JButton("Jogar na Direita");
         btnPassar = new JButton("Passar a Vez");
         JButton btnHistorico = new JButton("Ver Histórico");
-        btnHistorico.addActionListener(e -> new Historico().setVisible(true));
+        btnHistorico.addActionListener(e -> { 
+            SoundPlayer.playSound("click.wav"); 
+            new Historico().setVisible(true);
+        });
 
 
         btnEsquerda.addActionListener(e -> {
@@ -36,6 +39,7 @@ public class PainelControles extends JPanel {
                 janela.jogarPedra(selecionada, true);
                 janela.getPainelMao().limparSelecao(); 
             } else {
+                SoundPlayer.playSound("aviso.wav");
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
