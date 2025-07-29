@@ -50,11 +50,13 @@ public class PainelControles extends JPanel {
                 janela.jogarPedra(selecionada, false);
                 janela.getPainelMao().limparSelecao(); 
             } else {
+                SoundPlayer.playSound("aviso.wav");
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         btnPassar.addActionListener(e -> {
+            SoundPlayer.playSound("aviso.wav");
             int confirm = JOptionPane.showConfirmDialog(janela,
                 "Tem certeza que deseja passar a vez?", "Confirmar",
                 JOptionPane.YES_NO_OPTION);

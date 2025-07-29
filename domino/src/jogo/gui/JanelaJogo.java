@@ -81,9 +81,14 @@ public class JanelaJogo extends JFrame {
         painelMao = new PainelMao(mao);
         painelControles = new PainelControles(this);
         painelStatus = new PainelStatus(jogadorId, minhaVez);
+        
+        JScrollPane scrollMao = new JScrollPane(painelMao,
+            JScrollPane.VERTICAL_SCROLLBAR_NEVER,
+            JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollMao.getHorizontalScrollBar().setUnitIncrement(20);
 
+        add(scrollMao, BorderLayout.SOUTH);
         add(painelMesa, BorderLayout.CENTER);
-        add(painelMao, BorderLayout.SOUTH);
         add(painelControles, BorderLayout.EAST);
         add(painelStatus, BorderLayout.NORTH);
 
@@ -135,6 +140,7 @@ public class JanelaJogo extends JFrame {
 
                     mao.remove(pedraConfirmada);
                     painelMao.setMao(mao);
+//                    SoundPlayer.playSound("peca_recebida.wav"); 
                     SoundPlayer.playSound("jogada_correta.wav"); 
 
                     painelStatus.atualizarMensagem("Sua jogada: [" + ladoA_confirmada + "|" + ladoB_confirmada + "] realizada com sucesso.");
