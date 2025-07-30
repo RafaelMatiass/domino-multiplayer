@@ -91,7 +91,7 @@ public class PainelMao extends JPanel {
                     pedraSelecionada = pedra;
                     indicePedraSelecionada = currentIndex;
                 }
-                SoundPlayer.playSound("click.wav"); 
+                SoundPlayer.playSound("click.wav", false); 
                 atualizarMaoGUI();
             });
 

@@ -28,7 +28,7 @@ public class PainelControles extends JPanel {
         btnPassar = new JButton("Passar a Vez");
         JButton btnHistorico = new JButton("Ver Histórico");
         btnHistorico.addActionListener(e -> { 
-            SoundPlayer.playSound("click.wav"); 
+            SoundPlayer.playSound("click.wav", false); 
             new Historico().setVisible(true);
         });
 
@@ -39,7 +39,7 @@ public class PainelControles extends JPanel {
                 janela.jogarPedra(selecionada, true);
                 janela.getPainelMao().limparSelecao(); 
             } else {
-                SoundPlayer.playSound("aviso.wav");
+                SoundPlayer.playSound("aviso.wav", false);
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
@@ -50,13 +50,13 @@ public class PainelControles extends JPanel {
                 janela.jogarPedra(selecionada, false);
                 janela.getPainelMao().limparSelecao(); 
             } else {
-                SoundPlayer.playSound("aviso.wav");
+                SoundPlayer.playSound("aviso.wav", false);
                 JOptionPane.showMessageDialog(janela, "Selecione uma pedra primeiro!", "Aviso", JOptionPane.WARNING_MESSAGE);
             }
         });
 
         btnPassar.addActionListener(e -> {
-            SoundPlayer.playSound("aviso.wav");
+            SoundPlayer.playSound("aviso.wav", false);
             int confirm = JOptionPane.showConfirmDialog(janela,
                 "Tem certeza que deseja passar a vez?", "Confirmar",
                 JOptionPane.YES_NO_OPTION);

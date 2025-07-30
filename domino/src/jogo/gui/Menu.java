@@ -99,7 +99,7 @@ public class Menu extends JFrame {
 
         add(backgroundPanel, BorderLayout.CENTER);
        
-        SoundPlayer.playSound("game_start.wav"); 
+        SoundPlayer.playSound("game_start.wav", true); 
     }
 
     private void iniciarJogo() {

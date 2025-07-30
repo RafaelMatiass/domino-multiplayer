@@ -6,12 +6,16 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 public class SoundPlayer {
-    private static Clip clip; 
+    private static Clip clip;
+    private static boolean looping = false;
     
-    public static synchronized void playSound(final String soundFileName) {
+    public static synchronized void playSound(final String soundFileName, final boolean loop) {
         new Thread(() -> {
             try {
-                stopSound();
+                
+                if (loop) {
+                    stopSound();
+                }
                 
                 URL soundUrl = SoundPlayer.class.getResource("/sounds/" + soundFileName);
                 if (soundUrl == null) {
@@ -20,25 +24,32 @@ public class SoundPlayer {
                 }
 
                 AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(soundUrl);
-                clip = AudioSystem.getClip(); 
-                clip.open(audioInputStream);
-                clip.start();
+                Clip soundClip = AudioSystem.getClip();
+                soundClip.open(audioInputStream);
                 
-                clip.addLineListener(event -> {
-                    if (event.getType() == javax.sound.sampled.LineEvent.Type.STOP) {
-                        clip.close();
-                        clip = null;
-                    }
-                });
+                if (loop) {
+                    clip = soundClip;
+                    looping = true;
+                    clip.loop(Clip.LOOP_CONTINUOUSLY);
+                } else {
+                    soundClip.start(); 
+                    
+                    soundClip.addLineListener(event -> {
+                        if (event.getType() == javax.sound.sampled.LineEvent.Type.STOP) {
+                            soundClip.close();
+                        }
+                    });
+                }
             } catch (Exception e) {
                 System.err.println("Erro ao tocar o som: " + soundFileName + " - " + e.getMessage());
                 e.printStackTrace();
             }
         }).start();
     }
-    
+   
     public static synchronized void stopSound() {
         if (clip != null) {
+            looping = false;
             clip.stop();
             clip.close();
             clip = null;
