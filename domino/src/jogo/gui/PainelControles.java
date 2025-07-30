@@ -4,6 +4,7 @@ import jogo.Pedra;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import javax.swing.border.TitledBorder;
 
 public class PainelControles extends JPanel {
     private JButton btnEsquerda, btnDireita, btnPassar;
@@ -17,7 +18,6 @@ public class PainelControles extends JPanel {
 
     private void configurarPainel() {
         setBackground(new Color(240, 240, 240));
-        setBorder(BorderFactory.createTitledBorder("Controles"));
         setPreferredSize(new Dimension(200, 400));
         setLayout(new GridLayout(4, 1, 10, 10)); 
     }

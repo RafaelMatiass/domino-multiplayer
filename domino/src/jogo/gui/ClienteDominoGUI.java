@@ -6,7 +6,7 @@ public class ClienteDominoGUI {
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             try {
-                new JanelaJogo().setVisible(true);
+                new Menu().setVisible(true);
             } catch (Exception e) {
                 System.err.println("Erro ao iniciar o jogo: " + e.getMessage());
                 e.printStackTrace();
