@@ -5,11 +5,11 @@ Este projeto teve como intuito a implementação do clássico jogo Dominó como 
 Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionais do dominó, garantindo uma experiência autêntica e competitiva.
 
 ## 🎮 Funcionalidades Principais
-- ✅ **Modo Multiplayer Online** – Conecte-se com um amigo e jogue em tempo real, explorando a arquitetura cliente-servidor para uma comunicação fluida.
-- ✅ **Regras Clássicas do Dominó** – O jogo segue as regras tradicionais, garantindo a correta distribuição de peças, validação de jogadas e finalização da partida.
-- ✅ **Sistema de Turnos Inteligente** – O gerenciamento de turnos é automático e robusto, assegurando que cada jogador tenha a sua vez de jogar.
-- ✅ **Compra de Peças Automática** – Se um jogador não puder realizar uma jogada, ele compra peças automaticamente do monte.
-- ✅ **Detecção de Fim de Jogo** – O jogo detecta automaticamente a vitória por peças zeradas ou o fim por "tranco", quando não há mais jogadas possíveis.
+- **Modo Multiplayer Online** – Conecte-se com um amigo e jogue em tempo real, explorando a arquitetura cliente-servidor para uma comunicação fluida.
+- **Regras Clássicas do Dominó** – O jogo segue as regras tradicionais, garantindo a correta distribuição de peças, validação de jogadas e finalização da partida.
+- **Sistema de Turnos Inteligente** – O gerenciamento de turnos é automático e robusto, assegurando que cada jogador tenha a sua vez de jogar.
+- **Compra de Peças Automática** – Se um jogador não puder realizar uma jogada, ele compra peças automaticamente do monte.
+- **Detecção de Fim de Jogo** – O jogo detecta automaticamente a vitória por peças zeradas ou o fim por "tranco", quando não há mais jogadas possíveis.
 
 ## ⚙️ Tecnologias e Padrões Utilizados
 
@@ -17,37 +17,32 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 |-----------------------|-----------------------------------------------|
 | Java Swing            | Biblioteca de classes para a construção da    |
 |                       | Interface Gráfica do Usuário (GUI).           |
-|                       |                                               |
 | Java Socket           | Comunicação cliente-servidor.                 |
-|                       |                                               |
 | Orientação a Objetos  | Classes bem definidas (Pedra, MesaDeJogo, etc)|
-|                       |                                               |
 | Threads               | Processamento paralelo para múltiplos         |  
 |                       | jogadores e suas ações simultaneamente.       |
-|                       |                                               |
 | Arquivos XML          | Utilizado para leitura e escrita de dados,    |
 |                       | como o histórico de partidas.                 |
-|-----------------------|-----------------------------------------------|
 
 ## 🖼️ Telas do Jogo
 
 ### Menu inicial
 
-<img src="images/telas/menu.png" alt="Menu inicial do jogo">
+<img src="src/images/telas/menu.png" alt="Menu inicial do jogo">
 
 ### Visão geral da mesa de jogo
 
-<img src="images/telas/inicio-j1.png" alt="Tela de inicio j1">
-<img src="images/telas/inicio-j2.png" alt="Tela de inicio j2">
+<img src="src/images/telas/inicio-j1.png" alt="Tela de inicio j1">
+<img src="src/images/telas/inicio-j2.png" alt="Tela de inicio j2">
 
 ### Feedbacks (GUI)
 
-<img src="images/telas/passar.png" alt="Tela de passar a vez">
-<img src="images/telas/erro.png" alt="Tela de erro de jogada">
-<img src="images/telas/vitoria.png" alt="Tela de vitória">
-<img src="images/telas/derrota.png" alt="Tela de derrota">
-<img src="images/telas/historico.png" alt="Tela de historico">
-<img src="images/telas/reiniciar.png" alt="Tela de reinicio">
+<img src="src/images/telas/passar.png" alt="Tela de passar a vez">
+<img src="src/images/telas/erro.png" alt="Tela de erro de jogada">
+<img src="src/images/telas/vitoria.png" alt="Tela de vitória">
+<img src="src/images/telas/derrota.png" alt="Tela de derrota">
+<img src="src/images/telas/historico.png" alt="Tela de historico">
+<img src="src/images/telas/reiniciar.png" alt="Tela de reinicio">
 
 ## 📥 Instalação
 
@@ -60,7 +55,6 @@ Clique [aqui](https://github.com/RafaelMatiass/domino-multiplayer) para acessar 
 
 ### 1️⃣ Inicie o Servidor
 
-```bash
 java -cp bin conexao.ServidorDomino
 
 O servidor aguardará conexões dos jogadores.
