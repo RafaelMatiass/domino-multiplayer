@@ -27,24 +27,37 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 ### Menu inicial
 
 <p align="center">
-  <img src="domino/src/images/telas/menu.png" alt="Menu inicial" width="49%">
+  <img src="domino/src/images/telas/menu.png" alt="Menu inicial" width="70%">
 </p>
 
-### Visão geral da mesa de jogo
+### Mesa de jogo (início)
 
 <p align="center">
-  <img src="domino/src/images/telas/inicio-j1.png" alt="Tela de início - Jogador 1" width="49%">
-  <img src="domino/src/images/telas/inicio-j2.png" alt="Tela de início - Jogador 2" width="49%">
+  <img src="domino/src/images/telas/inicio-j1.png" alt="Tela de início - Jogador 1" width="50%">
+  <img src="domino/src/images/telas/inicio-j2.png" alt="Tela de início - Jogador 2" width="50%">
 </p>
 
 ### Feedbacks (GUI)
 
 <p align="center">
-  <img src="domino/src/images/telas/passar.png" alt="Tela de passar" width="49%">
-  <img src="domino/src/images/telas/erro.png" alt="Tela de erro" width="49%">
-  <img src="domino/src/images/telas/vitoria.png" alt="Tela de vitória" width="49%">
-  <img src="domino/src/images/telas/derrota-j2.png" alt="Tela de derrota" width="49%">
-  <img src="domino/src/images/telas/reiniciar.png" alt="Tela de reiniciar" width="49%">
+  ### passar a vez
+  <img src="domino/src/images/telas/passar.png" alt="Tela de passar" width="60%">
+</p>
+
+<p align="center">
+  ### erro de jogada
+  <img src="domino/src/images/telas/erro.png" alt="Tela de erro" width="60%">
+</p>
+
+<p align="center">
+  ### fim de jogo
+  <img src="domino/src/images/telas/vitoria.png" alt="Tela de vitória" width="50%">
+  <img src="domino/src/images/telas/derrota-j2.png" alt="Tela de derrota" width="50%">
+</p>
+
+<p align="center">
+  ### Reiniciar
+  <img src="domino/src/images/telas/reiniciar.png" alt="Tela de reiniciar" width="60%">
 </p>
 
 ### Histórico XML
