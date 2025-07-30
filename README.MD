@@ -26,21 +26,32 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 
 ### Menu inicial
 
-![Menu do Jogo](domino/src/images/telas/menu.png)
+<p align="center">
+  <img src="domino/src/images/telas/menu.png" alt="Menu inicial" width="49%">
+</p>
 
 ### Visão geral da mesa de jogo
 
-![Tela de inicio j1](domino/src/images/telas/inicio-j1.png)
-![Tela de inicio j2](domino/src/images/telas/inicio-j2.png)
+<p align="center">
+  <img src="domino/src/images/telas/inicio-j1.png" alt="Tela de início - Jogador 1" width="49%">
+  <img src="domino/src/images/telas/inicio-j2.png" alt="Tela de início - Jogador 2" width="49%">
+</p>
 
 ### Feedbacks (GUI)
 
-![Tela de passar a vez](domino/src/images/telas/passar.png)
-![Tela de erro de jogada](domino/src/images/telas/erro.png)
-![Tela de vitória](domino/src/images/telas/vitoria.png)
-![Tela de derrota](domino/src/images/telas/derrota.png)
-![Tela de historico](domino/src/images/telas/historico.png)
-![Tela de reinicio](domino/src/images/telas/reiniciar.png)
+<p align="center">
+  <img src="domino/src/images/telas/passar.png" alt="Tela de passar" width="49%">
+  <img src="domino/src/images/telas/erro.png" alt="Tela de erro" width="49%">
+  <img src="domino/src/images/telas/vitoria.png" alt="Tela de vitória" width="49%">
+  <img src="domino/src/images/telas/derrota-j2.png" alt="Tela de derrota" width="49%">
+  <img src="domino/src/images/telas/reiniciar.png" alt="Tela de reiniciar" width="49%">
+</p>
+
+### Histórico XML
+
+<p align="center">
+  <img src="domino/src/images/telas/historico.png" alt="Tela de histórico" width="49%">
+</p>
 
 ## 📥 Instalação
 
@@ -60,41 +71,47 @@ Clone este repositório:
   ```
 O servidor aguardará conexões dos jogadores.
 
-2️⃣ Conecte os Jogadores
+### 2️⃣ Conecte os Jogadores
 
   ```bash
     java -cp bin jogo.JogoDomino
   ```
 
-Cada jogador deve executar este comando em um terminal separado.
+- Cada jogador deve executar este comando em um terminal separado.
 
-Importante: Para conectar em rede o jogador 1 deve configurar o arquivo config.xml com seu ip e o jogador 2 deve configurar o config.xml com o ip do jogador 1. Deste modo, o jogador 1 executará o servidor e o cliente 1, enquanto o jogador executará o cliente 2 apenas, somente assim poderá ser execeutado em rede e simultaneamente.
+⚠️ **Importante**: Para conectar em rede o jogador 1 deve configurar o arquivo config.xml com seu ip e o jogador 2 deve configurar o config.xml com o ip do jogador 1. Deste modo, o jogador 1 executará o servidor e o cliente 1, enquanto o jogador executará o cliente 2 apenas, somente assim poderá ser execeutado em rede e simultaneamente.
 
-3️⃣ Comandos do Jogo
-jogar esquerda/direita → Jogar uma peça
+### 3️⃣ Comandos do Jogo
 
-passar a vez → Passar a vez e automaticamente compra um peça e a vez continua a ser do próprio jogador
+- jogar esquerda/direita → Jogar uma peça
 
-ver histórico → Ver as jogadas feitas até o presente momento (XML)
+- passar a vez → Passar a vez e automaticamente compra um peça e a vez continua a ser do próprio jogador
+
+- ver histórico → Ver as jogadas feitas até o presente momento (XML)
 
 ## 🏆 Regras do Jogo
 
-* 📌 Total de 28 peças, 14 no pote para compra.
-* 📌 Cada jogador começa com 7 peças.
-* 📌 O jogador 1 começa com qualquer peça.
-* 📌 Só é possível jogar nas extremidades da mesa.
-* 📌 Se não puder jogar, o jogador passa a vez e compra peças do monte.
+📌 Total de 28 peças, 14 no pote para compra.
+
+📌 Cada jogador começa com 7 peças.
+
+📌 O jogador 1 começa com qualquer peça.
+
+📌 Só é possível jogar nas extremidades da mesa.
+
+📌 Se não puder jogar, o jogador passa a vez e compra peças do monte.
 
 ### Fim do jogo:
 
-A partida termina quando um jogador zera suas peças. Ele é o vencedor!
+- A partida termina quando um jogador zera suas peças. Ele é o vencedor!
 
-Em caso de "tranco" (sem jogadas possíveis), vence o jogador com a menor pontuação em mãos.
+- Em caso de "tranco" (sem jogadas possíveis), vence o jogador com a menor pontuação em mãos.
 
 ## 📊 Arquiteura do Jogo
 
 O projeto segue um modelo cliente-servidor simples, onde o servidor é responsável por gerenciar a lógica do jogo (como a distribuição de peças e a validação de jogadas), e os clientes (jogadores) se conectam para interagir.
 
+```bash
 graph TD
     subgraph Cliente
         Jogador1[Jogador 1]
@@ -110,6 +127,7 @@ graph TD
     Jogador2 --> |Conexão| Servidor
     Servidor --> |Envio de estado do jogo| Jogador1
     Servidor --> |Envio de estado do jogo| Jogador2
+```
 
 ## 🛠 Próximas Atualizações (Roadmap)
 
