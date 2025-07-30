@@ -16,13 +16,13 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 | Componente            | Descrição                                     |
 |-----------------------|-----------------------------------------------|
 | Java Swing            | Biblioteca de classes para a construção da    |
-|                       | Interface Gráfica do Usuário (GUI).           |
+                          Interface Gráfica do Usuário (GUI).           
 | Java Socket           | Comunicação cliente-servidor.                 |
-| Orientação a Objetos  | Classes bem definidas (Pedra, MesaDeJogo, etc)|
+  Orientação a Objetos    Classes bem definidas (Pedra, MesaDeJogo, etc) 
 | Threads               | Processamento paralelo para múltiplos         |  
-|                       | jogadores e suas ações simultaneamente.       |
+                          jogadores e suas ações simultaneamente.        
 | Arquivos XML          | Utilizado para leitura e escrita de dados,    |
-|                       | como o histórico de partidas.                 |
+                          como o histórico de partidas.                  
 
 ## 🖼️ Telas do Jogo
 
@@ -75,11 +75,11 @@ ver histórico → Ver as jogadas feitas até o presente momento (XML)
 
 ## 🏆 Regras do Jogo
 
-📌 Total de 28 peças, 14 no pote para compra.
-📌 Cada jogador começa com 7 peças.
-📌 O jogador 1 começa com qualquer peça.
-📌 Só é possível jogar nas extremidades da mesa.
-📌 Se não puder jogar, o jogador passa a vez e compra peças do monte.
+* 📌 Total de 28 peças, 14 no pote para compra.
+* 📌 Cada jogador começa com 7 peças.
+* 📌 O jogador 1 começa com qualquer peça.
+* 📌 Só é possível jogar nas extremidades da mesa.
+* 📌 Se não puder jogar, o jogador passa a vez e compra peças do monte.
 
 ### Fim do jogo:
 
@@ -107,7 +107,7 @@ graph TD
     Servidor --> |Envio de estado do jogo| Jogador1
     Servidor --> |Envio de estado do jogo| Jogador2
 
-🛠 Próximas Atualizações (Roadmap)
+## 🛠 Próximas Atualizações (Roadmap)
 
 🔹 Modo Singleplayer contra uma IA: Adicionar um modo para jogar sozinho, com um oponente controlado pelo computador.
 
