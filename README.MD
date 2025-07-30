@@ -33,37 +33,37 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 ### Mesa de jogo (início)
 
 <p align="center">
-  <img src="domino/src/images/telas/inicio-j1.png" alt="Tela de início - Jogador 1" width="50%">
-  <img src="domino/src/images/telas/inicio-j2.png" alt="Tela de início - Jogador 2" width="50%">
+  <img src="domino/src/images/telas/inicio-j1.png" alt="Tela de início - Jogador 1" width="49%">
+  <img src="domino/src/images/telas/inicio-j2.png" alt="Tela de início - Jogador 2" width="49%">
 </p>
 
 ### Feedbacks (GUI)
 
+<h3 align="center">Passar a vez</h3>
 <p align="center">
-  ### passar a vez
-  <img src="domino/src/images/telas/passar.png" alt="Tela de passar" width="60%">
+  <img src="domino/src/images/telas/passar.png" alt="Tela de passar" width="70%">
 </p>
 
+<h3 align="center">Erro de jogada</h3>
 <p align="center">
-  ### erro de jogada
-  <img src="domino/src/images/telas/erro.png" alt="Tela de erro" width="60%">
+  <img src="domino/src/images/telas/erro.png" alt="Tela de erro" width="70%">
 </p>
 
+<h3 align="center">Fim de jogo</h3>
 <p align="center">
-  ### fim de jogo
-  <img src="domino/src/images/telas/vitoria.png" alt="Tela de vitória" width="50%">
-  <img src="domino/src/images/telas/derrota-j2.png" alt="Tela de derrota" width="50%">
+  <img src="domino/src/images/telas/vitoria.png" alt="Tela de vitória" width="49%">
+  <img src="domino/src/images/telas/derrota.png" alt="Tela de derrota" width="49%">
 </p>
 
+<h3 align="center">Reiniciar</h3>
 <p align="center">
-  ### Reiniciar
-  <img src="domino/src/images/telas/reiniciar.png" alt="Tela de reiniciar" width="60%">
+  <img src="domino/src/images/telas/reiniciar.png" alt="Tela de reiniciar" width="70%">
 </p>
 
 ### Histórico XML
 
 <p align="center">
-  <img src="domino/src/images/telas/historico.png" alt="Tela de histórico" width="49%">
+  <img src="domino/src/images/telas/historico.png" alt="Tela de histórico" width="70%">
 </p>
 
 ## 📥 Instalação
