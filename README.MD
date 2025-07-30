@@ -15,52 +15,56 @@ Com uma arquitetura cliente-servidor robusta, o jogo segue as regras tradicionai
 
 | Componente            | Descrição                                     |
 |-----------------------|-----------------------------------------------|
-| Java Swing            | Biblioteca de classes para a construção da    |
-                          Interface Gráfica do Usuário (GUI).           
+| Java Swing            | Biblioteca de classes para a construção da Interface Gráfica do Usuário (GUI).   |
 | Java Socket           | Comunicação cliente-servidor.                 |
-  Orientação a Objetos    Classes bem definidas (Pedra, MesaDeJogo, etc) 
-| Threads               | Processamento paralelo para múltiplos         |  
-                          jogadores e suas ações simultaneamente.        
-| Arquivos XML          | Utilizado para leitura e escrita de dados,    |
-                          como o histórico de partidas.                  
+| Orientação a Objetos  |  Classes bem definidas (Pedra, MesaDeJogo, etc) |
+| Threads               | Processamento paralelo para múltiplos jogadores e suas ações simultaneamente.|  
+| Arquivos XML          | Utilizado para leitura e escrita de dados, como o histórico de partidas.|
+                                            
 
 ## 🖼️ Telas do Jogo
 
 ### Menu inicial
 
-<img src="src/images/telas/menu.png" alt="Menu inicial do jogo">
+![Menu do Jogo](domino/src/images/telas/menu.png)
 
 ### Visão geral da mesa de jogo
 
-<img src="src/images/telas/inicio-j1.png" alt="Tela de inicio j1">
-<img src="src/images/telas/inicio-j2.png" alt="Tela de inicio j2">
+![Tela de inicio j1](domino/src/images/telas/inicio-j1.png)
+![Tela de inicio j2](domino/src/images/telas/inicio-j2.png)
 
 ### Feedbacks (GUI)
 
-<img src="src/images/telas/passar.png" alt="Tela de passar a vez">
-<img src="src/images/telas/erro.png" alt="Tela de erro de jogada">
-<img src="src/images/telas/vitoria.png" alt="Tela de vitória">
-<img src="src/images/telas/derrota.png" alt="Tela de derrota">
-<img src="src/images/telas/historico.png" alt="Tela de historico">
-<img src="src/images/telas/reiniciar.png" alt="Tela de reinicio">
+![Tela de passar a vez](domino/src/images/telas/passar.png)
+![Tela de erro de jogada](domino/src/images/telas/erro.png)
+![Tela de vitória](domino/src/images/telas/vitoria.png)
+![Tela de derrota](domino/src/images/telas/derrota.png)
+![Tela de historico](domino/src/images/telas/historico.png)
+![Tela de reinicio](domino/src/images/telas/reiniciar.png)
 
 ## 📥 Instalação
 
 Certifique-se de ter o Java e o JDK24 instalados
 
 Clone este repositório:
-Clique [aqui](https://github.com/RafaelMatiass/domino-multiplayer) para acessar a página do GitHub.
 
+  ```bash
+     https://github.com/RafaelMatiass/domino-multiplayer.git
+  ```
 ## 🚀 Como Jogar?
 
 ### 1️⃣ Inicie o Servidor
 
-java -cp bin conexao.ServidorDomino
-
+  ```bash
+    java -cp bin conexao.ServidorDomino
+  ```
 O servidor aguardará conexões dos jogadores.
 
 2️⃣ Conecte os Jogadores
-java -cp bin jogo.JogoDomino
+
+  ```bash
+    java -cp bin jogo.JogoDomino
+  ```
 
 Cada jogador deve executar este comando em um terminal separado.
 
